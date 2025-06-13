@@ -9,6 +9,7 @@ export interface Address {
 }
 
 export interface IUser {
+  save(): unknown
   name: string
   email: string
   phoneNum: string
