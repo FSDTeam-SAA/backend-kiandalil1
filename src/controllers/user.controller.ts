@@ -8,6 +8,7 @@ import { User } from '../models/user.model'
 import sendResponse from '../utils/sendResponse'
 import { JwtPayload } from 'jsonwebtoken'
 import mongoose from 'mongoose'
+
 export const register = catchAsync(async (req, res) => {
   const { name, email, password, phoneNum } = req.body
   if (!name || !email || !password) {
@@ -105,8 +106,6 @@ export const login = catchAsync(async (req, res) => {
 })
 
 
-
-
 export const verifyEmail = catchAsync(async (req, res) => {
   const { email, otp } = req.body
   const user = await User.isUserExistsByEmail(email)
@@ -139,4 +138,93 @@ export const verifyEmail = catchAsync(async (req, res) => {
   } else {
     throw new AppError(httpStatus.BAD_REQUEST, 'OTP is required')
   }
+})
+
+export const forgetPassword = catchAsync(async (req, res) => {
+  const { email } = req.body
+  const user = await User.isUserExistsByEmail(email)
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found')
+  }
+  const otp = generateOTP()
+  const jwtPayloadOTP = {
+    otp: otp,
+  }
+
+  const otptoken = createToken(
+    jwtPayloadOTP,
+    process.env.OTP_SECRET as string,
+    process.env.OTP_EXPIRE as string
+  )
+  user.password_reset_token = otptoken
+  await user.save()
+
+  /////// TODO: SENT EMAIL MUST BE DONE
+  sendEmail(user.email, 'Reset Password', `Your OTP is ${otp}`)
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'OTP sent to your email',
+    data: '',
+  })
+})
+
+export const resetPassword = catchAsync(async (req, res) => {
+  const { password, otp, email } = req.body
+  const user = await User.isUserExistsByEmail(email)
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found')
+  }
+  if (!user.password_reset_token) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'Password reset token is invalid'
+    )
+  }
+  const verify = (await verifyToken(
+    user.password_reset_token,
+    process.env.OTP_SECRET!
+  )) as JwtPayload
+  if (verify.otp !== otp) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Invalid OTP')
+  }
+  user.password = password
+  await user.save()
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Password reset successfully',
+    data: {},
+  })
+})
+
+
+export const changePassword = catchAsync(async (req, res) => {
+  const { oldPassword, newPassword } = req.body
+  if (!oldPassword || !newPassword) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'Old password and new password are required'
+    )
+  }
+  if (oldPassword === newPassword) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'Old password and new password cannot be same'
+    )
+  }
+  const user = await User.findById({ _id: req.user?._id })
+
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found')
+  }
+  user.password = newPassword
+  await user.save()
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Password changed',
+    data: '',
+  })
 })
