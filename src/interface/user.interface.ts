@@ -9,6 +9,7 @@ export interface Address {
 }
 
 export interface IUser {
+  _id(_id: any): unknown
   save(): unknown
   name: string
   email: string
