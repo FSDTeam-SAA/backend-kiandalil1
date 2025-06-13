@@ -9,4 +9,8 @@ export default {
     apiKey: process.env.CLOUDINARY_API_KEY,
     apiSecret: process.env.CLOUDINARY_API_SECRET,
   },
+  nodeMailer: {
+    APP_USER: process.env.APP_USER,
+    APP_PASS: process.env.APP_PASS,
+  },
 }
