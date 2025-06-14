@@ -1,4 +1,4 @@
-import catchAsync from '../utils/catchAsync'
+ import catchAsync from '../utils/catchAsync'
 import AppError from '../errors/AppError'
 import httpStatus from 'http-status'
 import { generateOTP } from '../utils/generateOTP'
