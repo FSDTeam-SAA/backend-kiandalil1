@@ -11,7 +11,6 @@ const ReviewSchema = new Schema<IReview>(
     propertyId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Property',
-      required: true,
     },
     comment: { type: String, required: true },
     rate: { type: Number, min: 1, max: 5, required: true },
