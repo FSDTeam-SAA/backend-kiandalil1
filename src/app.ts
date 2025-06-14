@@ -6,6 +6,7 @@ import { notFound } from './middlewares/notFound'
 import userRoutes from './routes/user.routes'
 import propertyRoutes from './routes/property.route'
 import reviewRoutes from './routes/review.route'
+import WishlistRoutes from './routes/wishlist.route'
 
 const app = express()
 
@@ -19,6 +20,9 @@ app.use("/api/v1", propertyRoutes)
 
 // ----------review routes -------------
 app.use('/api/v1', reviewRoutes)
+
+// ----------wishlist routes -------------
+app.use('/api/v1', WishlistRoutes)
 
 
 app.use(notFound as never)
