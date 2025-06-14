@@ -41,7 +41,6 @@ userSchema.pre('save', async function (next) {
   next()
 })
 
-
 userSchema.statics.isUserExistsByEmail = async function (email: string) {
   return await User.findOne({ email }).select('+password +secureFolderPin')
 }

@@ -10,5 +10,10 @@ export interface IProperty {
   features: string[]
   userId: Types.ObjectId
   approve: boolean
+  country: string
+  state: string
+  city: string
+  zipCode: string
+  address: string
 }
   

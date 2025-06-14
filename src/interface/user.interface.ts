@@ -1,13 +1,5 @@
 import { Document, Model, Types } from 'mongoose'
 
-export interface Address {
-  country: string
-  state: string
-  city: string
-  zipCode: string
-  address: string
-}
-
 export interface IUser {
   _id(_id: any): unknown
   save(): unknown
@@ -17,7 +9,6 @@ export interface IUser {
   password: string
   whatsappNum?: string
   wishlist: string[]
-  address: Address
   avatar?: string
   role: 'admin' | 'user'
   verificationInfo: {
@@ -25,7 +16,6 @@ export interface IUser {
     token: string
   }
   password_reset_token: string
-  
 }
 
 export interface UserModel extends Model<IUser> {

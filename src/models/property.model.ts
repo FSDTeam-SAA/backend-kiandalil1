@@ -1,12 +1,12 @@
 import mongoose, { Schema } from 'mongoose'
-import { IProperty } from '../interface/property.interface';
+import { IProperty } from '../interface/property.interface'
 
 const PropertySchema = new Schema<IProperty>(
   {
     images: [{ type: String, required: true }],
     title: { type: String, required: true },
     subtitle: { type: String },
-    type: {  type: String },
+    type: { type: String },
     description: { type: String },
     features: [{ type: String }],
     userId: {
@@ -15,7 +15,13 @@ const PropertySchema = new Schema<IProperty>(
       required: true,
     },
     approve: { type: Boolean, default: false },
+    country: { type: String },
+    state: { type: String },
+    city: { type: String },
+    zipCode: { type: String },
+    address: { type: String },
   },
+
   { timestamps: true }
 )
 
