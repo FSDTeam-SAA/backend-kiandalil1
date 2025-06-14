@@ -7,7 +7,7 @@ import userRoutes from './routes/user.routes'
 import propertyRoutes from './routes/property.route'
 import reviewRoutes from './routes/review.route'
 import WishlistRoutes from './routes/wishlist.route'
-
+import newsLetterRoutes from './routes/newsLetter.controller'
 const app = express()
 
 app.use(express.json())
@@ -23,6 +23,9 @@ app.use('/api/v1', reviewRoutes)
 
 // ----------wishlist routes -------------
 app.use('/api/v1', WishlistRoutes)
+
+// ----------Newsletter routes -------------
+app.use('/api/v1', newsLetterRoutes)
 
 
 app.use(notFound as never)
