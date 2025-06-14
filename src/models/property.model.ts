@@ -6,6 +6,7 @@ const PropertySchema = new Schema<IProperty>(
     images: [{ type: String, required: true }],
     title: { type: String, required: true },
     subtitle: { type: String },
+    type: {  type: String },
     description: { type: String },
     features: [{ type: String }],
     userId: {
