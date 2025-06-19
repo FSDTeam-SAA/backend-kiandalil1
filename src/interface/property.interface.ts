@@ -1,5 +1,12 @@
 import { Types } from "mongoose"
 
+ interface IQuality {
+  propertyType: string,
+  houseType: string,
+  bed: string,
+  bath: string,
+  sqrFt: string,
+ }
 
 export interface IProperty {
   images: string[]
@@ -15,5 +22,6 @@ export interface IProperty {
   city: string
   zipCode: string
   address: string
+  quality: IQuality
 }
   

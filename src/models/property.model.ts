@@ -20,6 +20,13 @@ const PropertySchema = new Schema<IProperty>(
     city: { type: String },
     zipCode: { type: String },
     address: { type: String },
+    quality: {
+      propertyType: { type: String },
+      houseType: { type: String },
+      bed: { type: String },
+      bath: { type: String },
+      sqrFt: { type: String },
+    },
   },
 
   { timestamps: true }
