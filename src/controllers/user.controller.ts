@@ -230,4 +230,14 @@ export const changePassword = catchAsync(async (req, res) => {
 })
 
 
-export const allUser = catchAsync(async (req))
+export const allUser = catchAsync(async (req, res)=>{
+  const user = await User.find().sort({ createAt: -1 })
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'All user fetched successfully',
+    data: user
+
+  })
+})
