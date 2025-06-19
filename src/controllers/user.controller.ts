@@ -228,3 +228,6 @@ export const changePassword = catchAsync(async (req, res) => {
     data: '',
   })
 })
+
+
+export const allUser = catchAsync(async (req))
