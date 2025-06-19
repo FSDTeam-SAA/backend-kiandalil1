@@ -1,4 +1,4 @@
- import catchAsync from '../utils/catchAsync'
+import catchAsync from '../utils/catchAsync'
 import AppError from '../errors/AppError'
 import httpStatus from 'http-status'
 import { generateOTP } from '../utils/generateOTP'
@@ -88,10 +88,7 @@ export const login = catchAsync(async (req, res) => {
     process.env.JWT_ACCESS_EXPIRES_IN as string
   )
 
-
   let _user = await user.save()
-
-
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -104,7 +101,6 @@ export const login = catchAsync(async (req, res) => {
     },
   })
 })
-
 
 export const verifyEmail = catchAsync(async (req, res) => {
   const { email, otp } = req.body
@@ -199,7 +195,6 @@ export const resetPassword = catchAsync(async (req, res) => {
   })
 })
 
-
 export const changePassword = catchAsync(async (req, res) => {
   const { oldPassword, newPassword } = req.body
   if (!oldPassword || !newPassword) {
@@ -229,15 +224,30 @@ export const changePassword = catchAsync(async (req, res) => {
   })
 })
 
-
-export const allUser = catchAsync(async (req, res)=>{
+export const allUser = catchAsync(async (req, res) => {
   const user = await User.find().sort({ createAt: -1 })
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'All user fetched successfully',
-    data: user
+    data: user,
+  })
+})
 
+export const singleUser = catchAsync(async (req, res) => {
+  const id = req.params
+
+  const user = await User.findById(id)
+
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found!')
+  }
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User fetched successfully',
+    data: user,
   })
 })

@@ -7,6 +7,7 @@ import {
   resetPassword,
   changePassword,
   allUser,
+  singleUser,
 } from '../controllers/user.controller'
 import { protect } from '../middlewares/auth.middleware'
 
@@ -21,5 +22,6 @@ router.post('/change-password', protect, changePassword)
 
 // get all user
 router.get('/all/user', allUser)
+router.get('/user/:id', singleUser)
 
 export default router
