@@ -6,7 +6,16 @@ import sendResponse from '../utils/sendResponse'
 import { Property } from '../models/property.model'
 import { uploadToCloudinary } from '../utils/cloudinary'
 
-
+// Get All Properties
+export const getAllProperties = catchAsync(async (req: Request, res: Response) => {
+  const properties = await Property.find().populate('userId', 'name email')
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Properties fetched successfully',
+    data: properties,
+  })
+})
 // Create a Property
 export const createProperty = catchAsync(async (req: any, res: any) => {
     const {
