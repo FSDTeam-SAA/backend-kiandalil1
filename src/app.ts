@@ -1,7 +1,7 @@
 import express from 'express'
 import { globalErrorHandler } from './middlewares/globalErrorHandler'
 import { notFound } from './middlewares/notFound'
-import cores from 'cors'
+import cors from 'cors'
 // routes
 import userRoutes from './routes/user.routes'
 import propertyRoutes from './routes/property.route'
@@ -11,10 +11,12 @@ import newsLetterRoutes from './routes/newsLetter.controller'
 import newsRoutes from './routes/news.route'
 
 const app = express()
-app.use(cores({
+app.use(
+  cors({
     origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS']
-}))
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  })
+)
 
 app.use(express.json())
 
@@ -22,7 +24,7 @@ app.use(express.json())
 app.use('/api/v1/user', userRoutes)
 
 // ----------property routes -------------
-app.use("/api/v1", propertyRoutes)
+app.use('/api/v1', propertyRoutes)
 
 // ----------review routes -------------
 app.use('/api/v1', reviewRoutes)
