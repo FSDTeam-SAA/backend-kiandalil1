@@ -1,21 +1,29 @@
-// routes/news.route.ts
 import express from 'express'
-import { isAdmin, protect } from '../middlewares/auth.middleware'
-import { upload } from '../middlewares/multer.middleware'
 import {
-  createNews,
-  getAllNews,
-  getSingleNews,
-  updateNews,
-  deleteNews,
-} from '../controllers/news.controller'
-
+  createProperty,
+  updateProperty,
+  deleteProperty,
+  getSingleProperty,
+  changeApprovalStatus,
+  getUnapprovedProperties,
+  getApprovedProperties,
+} from '../controllers/property.controller'
+import { protect } from '../middlewares/auth.middleware'
+import { isAdmin } from '../middlewares/auth.middleware'
+import { upload } from '../middlewares/multer.middleware'
 const router = express.Router()
 
-router.get('/news', getAllNews)
-router.get('/news/:id', getSingleNews)
-router.post('/news', protect, isAdmin, upload.array('images'), createNews)
-router.patch('/news/:id', protect, isAdmin, upload.array('images'), updateNews)
-router.delete('/news/:id', protect, isAdmin, deleteNews)
+router.post('/properties', protect, upload.array('images'), createProperty)
+router.get('/properties/:id', getSingleProperty)
+router.patch('/properties/:id', protect, updateProperty)
+router.delete('/properties/:id', protect, deleteProperty)
+router.patch('/properties/approve/:id', protect, isAdmin, changeApprovalStatus)
+router.get(
+  '/properties/unapproved/all',
+  protect,
+  isAdmin,
+  getUnapprovedProperties
+)
 
+router.get('/properties/approved/all', getApprovedProperties )
 export default router
