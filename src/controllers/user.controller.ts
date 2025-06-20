@@ -236,7 +236,7 @@ export const allUser = catchAsync(async (req, res) => {
 })
 
 export const singleUser = catchAsync(async (req, res) => {
-  const id = req.params
+  const { id } = req.params
 
   const user = await User.findById(id)
 
