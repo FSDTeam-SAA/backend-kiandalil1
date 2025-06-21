@@ -8,12 +8,11 @@ import {
   updateNews,
 } from '../controllers/news.controller'
 
-
 const router = express.Router()
 
 router.get('/news', getAllNews)
-router.post('/news', protect,isAdmin, upload.single('image'), createNews)
-router.patch('/news/:id', protect, updateNews)
-router.delete('/review/:id', deleteNews)
+router.post('/news', protect, isAdmin, upload.single('image'), createNews)
+router.patch('/news/:id', protect, isAdmin, updateNews)
+router.delete('/review/:id', protect, isAdmin, deleteNews)
 
 export default router
