@@ -8,6 +8,7 @@ import { User } from '../models/user.model'
 import sendResponse from '../utils/sendResponse'
 import { JwtPayload } from 'jsonwebtoken'
 import mongoose from 'mongoose'
+import { uploadToCloudinary } from '../utils/cloudinary'
 
 export const register = catchAsync(async (req, res) => {
   const { name, email, password, phoneNum } = req.body
@@ -248,6 +249,33 @@ export const singleUser = catchAsync(async (req, res) => {
     statusCode: httpStatus.OK,
     success: true,
     message: 'User fetched successfully',
+    data: user,
+  })
+})
+
+export const userprofileUpgrade = catchAsync(async (req, res) => {
+  const { id } = req.params
+  const updateUserInfo = req.body
+
+  const file = req.file as Express.Multer.File
+
+  if (file) {
+    const cloudinaryResult = await uploadToCloudinary(file.path)
+    if (cloudinaryResult && cloudinaryResult.secure_url) {
+      updateUserInfo.avatar = { url: cloudinaryResult.secure_url }
+    }
+  }
+
+  const user = await User.findByIdAndUpdate(id, updateUserInfo, { new: true })
+
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found!')
+  }
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User info updated successfully!',
     data: user,
   })
 })
