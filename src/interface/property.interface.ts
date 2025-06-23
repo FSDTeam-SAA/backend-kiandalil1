@@ -22,6 +22,7 @@ export interface IProperty {
   city: string
   zipCode: string
   address: string
+  offMarket: boolean
   quality: IQuality
 }
   
