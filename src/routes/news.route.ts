@@ -6,6 +6,7 @@ import {
   getAllNews,
   deleteNews,
   updateNews,
+  getSingleNews,
 } from '../controllers/news.controller'
 
 const router = express.Router()
@@ -13,6 +14,7 @@ const router = express.Router()
 router.get('/news', getAllNews)
 router.post('/news', protect, isAdmin, upload.single('image'), createNews)
 router.patch('/news/:id', protect, isAdmin, upload.array('images'), updateNews)
+router.get('/news/:id', getSingleNews)
 router.delete('/news/:id', protect, isAdmin, deleteNews)
 
 export default router
