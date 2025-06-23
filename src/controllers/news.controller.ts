@@ -6,6 +6,7 @@ import AppError from '../errors/AppError'
 import sendResponse from '../utils/sendResponse'
 import { News } from '../models/news.model'
 import { uploadToCloudinary } from '../utils/cloudinary'
+import fs from 'fs'
 
 // Create news
 
@@ -76,6 +77,41 @@ export const getSingleNews = catchAsync(async (req: Request, res: Response) => {
 })
 
 // Update News
+// export const updateNews = catchAsync(async (req: Request, res: Response) => {
+//   const { id } = req.params
+//   const { title, subTitle, description } = req.body || {}
+//   const files = req.files as Express.Multer.File[]
+
+//   const updatePayload: Partial<{
+//     title: string
+//     subTitle: string
+//     description: string
+//     images: string[]
+//   }> = {}
+
+//   if (title) updatePayload.title = title
+//   if (subTitle) updatePayload.subTitle = subTitle
+//   if (description) updatePayload.description = description
+//   if (files && files.length > 0) {
+//     updatePayload.images = files.map((file) => file.path)
+//   }
+
+//   const updatedNews = await News.findByIdAndUpdate(id, updatePayload, {
+//     new: true,
+//   })
+
+//   if (!updatedNews) {
+//     throw new AppError(httpStatus.NOT_FOUND, 'News not found')
+//   }
+
+//   sendResponse(res, {
+//     statusCode: httpStatus.OK,
+//     success: true,
+//     message: 'News updated successfully',
+//     data: updatedNews,
+//   })
+// })
+
 export const updateNews = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params
   const { title, subTitle, description } = req.body || {}
@@ -88,11 +124,36 @@ export const updateNews = catchAsync(async (req: Request, res: Response) => {
     images: string[]
   }> = {}
 
-  if (title) updatePayload.title = title
-  if (subTitle) updatePayload.subTitle = subTitle
-  if (description) updatePayload.description = description
+  // Handle text fields
+  if (title !== undefined) updatePayload.title = title
+  if (subTitle !== undefined) updatePayload.subTitle = subTitle
+  if (description !== undefined) updatePayload.description = description
+
+  // Handle file uploads
   if (files && files.length > 0) {
-    updatePayload.images = files.map((file) => file.path)
+    // Upload images to Cloudinary (similar to your property controller)
+    const cloudinaryResults = await Promise.all(
+      files.map(async (file) => {
+        const result = await uploadToCloudinary(file.path)
+        if (fs.existsSync(file.path)) {
+          fs.unlinkSync(file.path) // Clean up temp file
+        }
+        return result
+      })
+    )
+
+    const imageUrls = cloudinaryResults
+      .filter((r) => r !== null)
+      .map((r) => (r as { secure_url: string }).secure_url)
+
+    if (imageUrls.length === 0) {
+      throw new AppError(
+        httpStatus.INTERNAL_SERVER_ERROR,
+        'Image upload failed'
+      )
+    }
+
+    updatePayload.images = imageUrls
   }
 
   const updatedNews = await News.findByIdAndUpdate(id, updatePayload, {
