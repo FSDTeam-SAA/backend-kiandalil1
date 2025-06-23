@@ -5,6 +5,7 @@ import AppError from '../errors/AppError'
 import sendResponse from '../utils/sendResponse'
 import { Property } from '../models/property.model'
 import { uploadToCloudinary } from '../utils/cloudinary'
+import fs from "fs"
 
 // Get All Properties
 export const getAllProperties = catchAsync(
@@ -50,7 +51,13 @@ export const createProperty = catchAsync(
 
     // Upload images to Cloudinary
     const cloudinaryResults = await Promise.all(
-      files.map((file) => uploadToCloudinary(file.path))
+      files.map(async (file) => {
+        const result = await uploadToCloudinary(file.path)
+        if (fs.existsSync(file.path)) {
+          fs.unlinkSync(file.path)
+        }
+        return result
+      })
     )
 
     const imageUrls = cloudinaryResults
