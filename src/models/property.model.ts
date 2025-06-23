@@ -15,6 +15,8 @@ const PropertySchema = new Schema<IProperty>(
       required: true,
     },
     approve: { type: Boolean, default: false },
+    price: { type: Number, required: true },
+
     country: { type: String },
     state: { type: String },
     city: { type: String },

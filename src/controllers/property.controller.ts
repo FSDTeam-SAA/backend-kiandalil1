@@ -5,7 +5,7 @@ import AppError from '../errors/AppError'
 import sendResponse from '../utils/sendResponse'
 import { Property } from '../models/property.model'
 import { uploadToCloudinary } from '../utils/cloudinary'
-import fs from "fs"
+import fs from 'fs'
 
 // Get All Properties
 export const getAllProperties = catchAsync(
@@ -33,6 +33,7 @@ export const createProperty = catchAsync(
       state,
       city,
       zipCode,
+      price,
       address,
       offMarket,
     } = req.body
@@ -105,6 +106,7 @@ export const createProperty = catchAsync(
       images: imageUrls,
       country,
       state,
+      price,
       city,
       zipCode,
       address,
@@ -240,15 +242,63 @@ export const getUnapprovedProperties = catchAsync(
 
 export const getApprovedProperties = catchAsync(
   async (req: Request, res: Response) => {
-    const unapprovedProperties = await Property.find({
-      approve: true,
-    }).populate('userId', 'name email')
+    const { search, minPrice, maxPrice, type, country, state, city } = req.query
+
+    const filter: any = { approve: true }
+
+    // Price range filtering
+    if (minPrice || maxPrice) {
+      filter.price = {}
+      if (minPrice) filter.price.$gte = Number(minPrice)
+      if (maxPrice) filter.price.$lte = Number(maxPrice)
+    }
+
+    // Search across multiple fields
+    if (search) {
+      const searchRegex = new RegExp(search as string, 'i')
+      filter.$or = [
+        { title: searchRegex },
+        { type: searchRegex },
+        { features: searchRegex },
+        { country: searchRegex },
+        { state: searchRegex },
+        { city: searchRegex },
+      ]
+    }
+
+    // Exact match filters
+    if (type) filter.type = type
+    if (country) filter.country = country
+    if (state) filter.state = state
+    if (city) filter.city = city
+
+    const properties = await Property.find(filter).populate(
+      'userId',
+      'name email'
+    )
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
-      message: 'Unapproved properties fetched',
-      data: unapprovedProperties,
+      message: 'Approved properties fetched',
+      data: properties,
     })
   }
 )
+
+
+// property.controller.ts
+export const getPropertiesByUserId = catchAsync(
+  async (req: Request, res: Response) => {
+    const { userId } = req.params;
+    const properties = await Property.find({ userId })
+      .populate('userId', 'name email');
+    
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Properties fetched successfully',
+      data: properties,
+    });
+  }
+);

@@ -7,6 +7,7 @@ import {
   changeApprovalStatus,
   getUnapprovedProperties,
   getApprovedProperties,
+  getPropertiesByUserId,
 } from '../controllers/property.controller'
 import { protect } from '../middlewares/auth.middleware'
 import { isAdmin } from '../middlewares/auth.middleware'
@@ -26,5 +27,8 @@ router.get(
 )
 
 router.get
-router.get('/properties/approved/all', getApprovedProperties )
+
+router.get('/properties/user/:userId', protect, getPropertiesByUserId)
+router.get('/properties/approved/all', getApprovedProperties)
+
 export default router

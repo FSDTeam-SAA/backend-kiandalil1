@@ -13,6 +13,7 @@ export interface IProperty {
   title: string
   subtitle: string
   type: string
+  price: number
   description: string
   features: string[]
   userId: Types.ObjectId
