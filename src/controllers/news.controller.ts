@@ -78,7 +78,7 @@ export const getSingleNews = catchAsync(async (req: Request, res: Response) => {
 // Update News
 export const updateNews = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params
-  const { title, subTitle, description } = req.body
+  const { title, subTitle, description } = req.body || {}
   const files = req.files as Express.Multer.File[]
 
   const updatePayload: Partial<{

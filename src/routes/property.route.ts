@@ -25,5 +25,6 @@ router.get(
   getUnapprovedProperties
 )
 
+router.get
 router.get('/properties/approved/all', getApprovedProperties )
 export default router
