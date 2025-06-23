@@ -19,14 +19,13 @@ export const createNews = catchAsync(async (req: Request, res: Response) => {
     )
   }
 
-  const files = req.files as Express.Multer.File[]
-  if (!files || files.length === 0) {
-    throw new AppError(httpStatus.BAD_REQUEST, 'At least one image is required')
+  const file = (req.file || (req.files && (req.files as Express.Multer.File[])[0])) as Express.Multer.File
+  if (!file) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'An image is required')
   }
 
-  const uploadedImages = await Promise.all(
-    files.map((file) => uploadToCloudinary(file.path))
-  )
+  const uploadedImage = await uploadToCloudinary(file.path)
+  const uploadedImages = uploadedImage ? [uploadedImage] : []
 
   const imageUrls = uploadedImages
     .filter((res) => res !== null)
