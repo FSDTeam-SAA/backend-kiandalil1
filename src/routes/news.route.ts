@@ -13,6 +13,6 @@ const router = express.Router()
 router.get('/news', getAllNews)
 router.post('/news', protect, isAdmin, upload.single('image'), createNews)
 router.patch('/news/:id', protect, isAdmin, updateNews)
-router.delete('/review/:id', protect, isAdmin, deleteNews)
+router.delete('/news/:id', protect, isAdmin, deleteNews)
 
 export default router

@@ -36,7 +36,7 @@ app.use('/api/v1', WishlistRoutes)
 // ----------Newsletter routes -------------
 app.use('/api/v1', newsLetterRoutes)
 
-// ----------Newsletter routes -------------
+// ----------news routes -------------
 app.use('/api/v1', newsRoutes)
 
 // ----------contact routes -------------
