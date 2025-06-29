@@ -4,6 +4,8 @@ import httpStatus from 'http-status'
 import AppError from '../errors/AppError'
 import sendResponse from '../utils/sendResponse'
 import { Wishlist } from '../models/wishlist.models'
+import { getPaginationParams, buildMetaPagination } from '../utils/pagination'
+
 
 // Add to wishlist
 export const addToWishlist = catchAsync(async (req: Request, res: Response) => {
@@ -29,18 +31,29 @@ export const addToWishlist = catchAsync(async (req: Request, res: Response) => {
   })
 })
 
+
 // Get wishlist for user
 export const getUserWishlist = catchAsync(
   async (req: Request, res: Response) => {
     const userId = req.user?._id
+    const { page, limit, skip } = getPaginationParams(req.query)
 
-    const wishlist = await Wishlist.find({ userId }).populate('propertyId')
+    const totalItems = await Wishlist.countDocuments({ userId })
+    const totalPages = Math.ceil(totalItems / limit)
+
+    const wishlist = await Wishlist.find({ userId })
+      .skip(skip)
+      .limit(limit)
+      .populate('propertyId')
+
+    const meta = buildMetaPagination(totalItems, page, limit)
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
       message: 'Wishlist fetched',
       data: wishlist,
+      meta,
     })
   }
 )

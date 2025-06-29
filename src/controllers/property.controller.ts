@@ -6,6 +6,7 @@ import sendResponse from '../utils/sendResponse'
 import { Property } from '../models/property.model'
 import { uploadToCloudinary } from '../utils/cloudinary'
 import fs from 'fs'
+import { getPaginationParams, buildMetaPagination } from '../utils/pagination'
 
 // Get All Properties
 export const getAllProperties = catchAsync(
@@ -231,22 +232,34 @@ export const changeApprovalStatus = catchAsync(
 // Get only unapproved properties (Admin only)
 export const getUnapprovedProperties = catchAsync(
   async (req: Request, res: Response) => {
-    const unapprovedProperties = await Property.find({
-      approve: false,
-    }).populate('userId', 'name email')
+    const { page, limit, skip } = getPaginationParams(req.query)
+
+    const totalItems = await Property.countDocuments({ approve: false })
+
+    const totalPages = Math.ceil(totalItems / limit)
+
+    const unapprovedProperties = await Property.find({ approve: false })
+      .skip(skip)
+      .limit(limit)
+      .populate('userId', 'name email')
+
+    const meta = buildMetaPagination(totalItems, page, limit)
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
       message: 'Unapproved properties fetched',
       data: unapprovedProperties,
+      meta,
     })
   }
 )
 
+
 export const getApprovedProperties = catchAsync(
   async (req: Request, res: Response) => {
     const { search, minPrice, maxPrice, type, country, state, city } = req.query
+    const { page, limit, skip } = getPaginationParams(req.query)
 
     const filter: any = { approve: true }
 
@@ -276,16 +289,22 @@ export const getApprovedProperties = catchAsync(
     if (state) filter.state = state
     if (city) filter.city = city
 
-    const properties = await Property.find(filter).populate(
-      'userId',
-      'name email'
-    )
+    const totalItems = await Property.countDocuments(filter)
+    const totalPages = Math.ceil(totalItems / limit)
+
+    const properties = await Property.find(filter)
+      .skip(skip)
+      .limit(limit)
+      .populate('userId', 'name email')
+
+    const meta = buildMetaPagination(totalItems, page, limit)
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
       message: 'Approved properties fetched',
       data: properties,
+      meta,
     })
   }
 )
@@ -294,15 +313,25 @@ export const getApprovedProperties = catchAsync(
 // property.controller.ts
 export const getPropertiesByUserId = catchAsync(
   async (req: Request, res: Response) => {
-    const { userId } = req.params;
+    const { userId } = req.params
+    const { page, limit, skip } = getPaginationParams(req.query)
+
+    const totalItems = await Property.countDocuments({ userId })
+    const totalPages = Math.ceil(totalItems / limit)
+
     const properties = await Property.find({ userId })
-      .populate('userId', 'name email');
-    
+      .skip(skip)
+      .limit(limit)
+      .populate('userId', 'name email')
+
+    const meta = buildMetaPagination(totalItems, page, limit)
+
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
       message: 'Properties fetched successfully',
       data: properties,
-    });
+      meta,
+    })
   }
-);
+)

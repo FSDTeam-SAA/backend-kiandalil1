@@ -9,6 +9,7 @@ import sendResponse from '../utils/sendResponse'
 import { JwtPayload } from 'jsonwebtoken'
 import mongoose from 'mongoose'
 import { uploadToCloudinary } from '../utils/cloudinary'
+import { getPaginationParams, buildMetaPagination  } from '../utils/pagination'
 
 export const register = catchAsync(async (req, res) => {
   const { name, email, password, phoneNum } = req.body
@@ -226,13 +227,22 @@ export const changePassword = catchAsync(async (req, res) => {
 })
 
 export const allUser = catchAsync(async (req, res) => {
-  const user = await User.find().sort({ createAt: -1 })
+  const { page, limit, skip } = getPaginationParams(req.query)
+
+    const totalItems = await User.countDocuments()
+    const totalPages = Math.ceil(totalItems / limit)
+
+  const user = await User.find().sort({ createAt: -1 }).skip(skip).limit(limit)
+
+  const meta = buildMetaPagination(totalItems, page, limit)
+
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'All user fetched successfully',
     data: user,
+    meta
   })
 })
 
