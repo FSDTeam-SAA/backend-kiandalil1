@@ -7,6 +7,7 @@ import sendResponse from '../utils/sendResponse'
 import { News } from '../models/news.model'
 import { uploadToCloudinary } from '../utils/cloudinary'
 import fs from 'fs'
+import { getPaginationParams, buildMetaPagination } from '../utils/pagination'
 
 // Create news
 
@@ -49,13 +50,24 @@ export const createNews = catchAsync(async (req: Request, res: Response) => {
 
 // Get All News
 export const getAllNews = catchAsync(async (req: Request, res: Response) => {
-  const news = await News.find().sort({ createdAt: -1 })
+  const { page, limit, skip } = getPaginationParams(req.query)
+
+  const totalItems = await News.countDocuments()
+  const totalPages = Math.ceil(totalItems / limit)
+
+  const news = await News.find()
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit)
+
+  const meta = buildMetaPagination(totalItems, page, limit)
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'News fetched successfully',
     data: news,
+    meta,
   })
 })
 
