@@ -23,6 +23,9 @@ const PropertySchema = new Schema<IProperty>(
     zipCode: { type: String },
     address: { type: String },
     offMarket: { type: Boolean, default: true },
+    whatsappNum: { type: Number, default: null },
+    phoneNum: { type: String },
+
     quality: {
       propertyType: { type: String },
       houseType: { type: String },

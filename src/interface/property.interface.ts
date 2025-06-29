@@ -25,5 +25,7 @@ export interface IProperty {
   address: string
   offMarket: boolean
   quality: IQuality
+  whatsappNum: number
+  phoneNum: string
 }
   

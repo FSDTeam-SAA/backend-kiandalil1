@@ -36,6 +36,8 @@ export const createProperty = catchAsync(
       price,
       address,
       offMarket,
+      whatsappNum,
+      phoneNum,
     } = req.body
 
     const userId = req.user?._id
@@ -112,6 +114,8 @@ export const createProperty = catchAsync(
       address,
       quality,
       offMarket,
+      whatsappNum,
+      phoneNum,
     })
 
     sendResponse(res, {
