@@ -30,7 +30,7 @@ export const subscribeNewsletter = catchAsync(async (req, res) => {
   })
 })
 
-export const broadcastNewsletter = catchAsync(async (req, res) => {
+export  const broadcastNewsletter = catchAsync(async (req, res) => {
   const { subject, html } = req.body
 
   if (!subject || !html) {
