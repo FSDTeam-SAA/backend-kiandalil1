@@ -8,6 +8,7 @@ import {
   getUnapprovedProperties,
   getApprovedProperties,
   getPropertiesByUserId,
+  getApprovedPropertiesByCity,
 } from '../controllers/property.controller'
 import { protect } from '../middlewares/auth.middleware'
 import { isAdmin } from '../middlewares/auth.middleware'
@@ -30,5 +31,8 @@ router.get
 
 router.get('/properties/user/:userId', protect, getPropertiesByUserId)
 router.get('/properties/approved/all', getApprovedProperties)
+
+// get property citys
+router.get('/all/properties/citys', getApprovedPropertiesByCity)
 
 export default router

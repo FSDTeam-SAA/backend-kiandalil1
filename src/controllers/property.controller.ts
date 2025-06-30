@@ -335,3 +335,30 @@ export const getPropertiesByUserId = catchAsync(
     })
   }
 )
+
+export const getApprovedPropertiesByCity = catchAsync(
+  async (req: Request, res: Response) => {
+    try {
+      const cities = await Property.distinct('city')
+      sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Cities fetched successfully',
+        data: cities,
+      })
+    } catch (err) {
+      if (err && typeof err === 'object' && 'name' in err && (err as any).name === 'CastError') {
+        sendResponse(res, {
+          statusCode: httpStatus.BAD_REQUEST,
+          success: false,
+          message: 'Invalid Cast error',
+          data: {},
+        })
+      } else {
+        throw err
+      }
+    }
+  }
+)
+
+
