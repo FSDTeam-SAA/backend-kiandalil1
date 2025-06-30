@@ -7,7 +7,7 @@ import { sendEmail } from '../utils/sendEmail'
 import { User } from '../models/user.model'
 
 export const createContactMessage = catchAsync(async (req, res) => {
-  const { firstName, lastName, address, phoneNum, subject, message } = req.body
+  const { firstName, lastName, address, phoneNum, subject, message, email } = req.body
 
   if (!firstName || !lastName || !address || !subject || !message) {
     throw new AppError(httpStatus.BAD_REQUEST, 'All fields are required')
@@ -20,6 +20,7 @@ export const createContactMessage = catchAsync(async (req, res) => {
     phoneNum,
     subject,
     message,
+    email,
   })
 
   // Find all admin users
@@ -33,6 +34,7 @@ export const createContactMessage = catchAsync(async (req, res) => {
     <h3>New Contact Message</h3>
     <p><strong>Name:</strong> ${firstName} ${lastName}</p>
     <p><strong>Address:</strong> ${address}</p>
+    <p><strong>Email:</strong> ${email}</p>
     <p><strong>Phone:</strong> ${phoneNum}</p>
     <p><strong>Subject:</strong> ${subject}</p>
     <p><strong>Message:</strong><br/> ${message}</p>

@@ -2,10 +2,11 @@ import { Schema, model } from 'mongoose'
 
 const contactSchema = new Schema(
   {
-    firstName: { type: String, required: true },
-    lastName: { type: String, required: true },
+    firstName: { type: String, },
+    lastName: { type: String, },
     address: { type: String,  },
     phoneNum: { type: String,  },
+    email: { type: String, required: true },
     subject: { type: String, required: true },
     message: { type: String, required: true },
   },
