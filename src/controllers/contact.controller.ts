@@ -9,7 +9,7 @@ import { User } from '../models/user.model'
 export const createContactMessage = catchAsync(async (req, res) => {
   const { firstName, lastName, address, phoneNum, subject, message, email } = req.body
 
-  if (!firstName || !lastName || !address || !subject || !message) {
+  if ( !email || !subject || !message) {
     throw new AppError(httpStatus.BAD_REQUEST, 'All fields are required')
   }
 
