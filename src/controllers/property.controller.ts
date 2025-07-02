@@ -255,10 +255,18 @@ export const getUnapprovedProperties = catchAsync(
   }
 )
 
-
 export const getApprovedProperties = catchAsync(
   async (req: Request, res: Response) => {
-    const { search, minPrice, maxPrice, type, country, state, city } = req.query
+    const {
+      search,
+      minPrice,
+      maxPrice,
+      type,
+      country,
+      state,
+      city,
+      offMarket,
+    } = req.query
     const { page, limit, skip } = getPaginationParams(req.query)
 
     const filter: any = { approve: true }
@@ -289,6 +297,10 @@ export const getApprovedProperties = catchAsync(
     if (state) filter.state = state
     if (city) filter.city = city
 
+    if (offMarket !== undefined) {
+      filter.offMarket = offMarket === 'true'
+    }
+
     const totalItems = await Property.countDocuments(filter)
     const totalPages = Math.ceil(totalItems / limit)
 
@@ -308,7 +320,6 @@ export const getApprovedProperties = catchAsync(
     })
   }
 )
-
 
 // property.controller.ts
 export const getPropertiesByUserId = catchAsync(
@@ -347,7 +358,12 @@ export const getApprovedPropertiesByCity = catchAsync(
         data: cities,
       })
     } catch (err) {
-      if (err && typeof err === 'object' && 'name' in err && (err as any).name === 'CastError') {
+      if (
+        err &&
+        typeof err === 'object' &&
+        'name' in err &&
+        (err as any).name === 'CastError'
+      ) {
         sendResponse(res, {
           statusCode: httpStatus.BAD_REQUEST,
           success: false,
@@ -360,5 +376,3 @@ export const getApprovedPropertiesByCity = catchAsync(
     }
   }
 )
-
-
