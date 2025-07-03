@@ -255,6 +255,73 @@ export const getUnapprovedProperties = catchAsync(
   }
 )
 
+// export const getApprovedProperties = catchAsync(
+
+//   async (req: Request, res: Response) => {
+//     const {
+//       search,
+//       minPrice,
+//       maxPrice,
+//       type,
+//       country,
+//       state,
+//       city,
+//       offMarket,
+//     } = req.query
+//     const { page, limit, skip } = getPaginationParams(req.query)
+
+//     const filter: any = { approve: true }
+
+//     // Price range filtering
+//     if (minPrice || maxPrice) {
+//       filter.price = {}
+//       if (minPrice) filter.price.$gte = Number(minPrice)
+//       if (maxPrice) filter.price.$lte = Number(maxPrice)
+//     }
+
+//     // Search across multiple fields
+//     if (search) {
+//       const searchRegex = new RegExp(search as string, 'i')
+//       filter.$or = [
+//         { title: searchRegex },
+//         { type: searchRegex },
+//         { features: searchRegex },
+//         { country: searchRegex },
+//         { state: searchRegex },
+//         { city: searchRegex },
+//       ]
+//     }
+
+//     // Exact match filters
+//     if (type) filter.type = type
+//     if (country) filter.country = country
+//     if (state) filter.state = state
+//     if (city) filter.city = city
+
+//     if (offMarket !== undefined) {
+//       filter.offMarket = offMarket === 'true'
+//     }
+
+//     const totalItems = await Property.countDocuments(filter)
+//     const totalPages = Math.ceil(totalItems / limit)
+
+//     const properties = await Property.find(filter)
+//       .skip(skip)
+//       .limit(limit)
+//       .populate('userId', 'name email')
+
+//     const meta = buildMetaPagination(totalItems, page, limit)
+
+//     sendResponse(res, {
+//       statusCode: httpStatus.OK,
+//       success: true,
+//       message: 'Approved properties fetched',
+//       data: properties,
+//       meta,
+//     })
+//   }
+// )
+
 export const getApprovedProperties = catchAsync(
   async (req: Request, res: Response) => {
     const {
@@ -266,10 +333,19 @@ export const getApprovedProperties = catchAsync(
       state,
       city,
       offMarket,
+      bed,
     } = req.query
     const { page, limit, skip } = getPaginationParams(req.query)
 
     const filter: any = { approve: true }
+
+    // ✅ Bed filtering: greater than or equal to the specified number
+    if (bed) {
+      const bedNumber = Number(bed)
+      if (!isNaN(bedNumber)) {
+        filter['quality.bed'] = { $gte: bedNumber }
+      }
+    }
 
     // Price range filtering
     if (minPrice || maxPrice) {
