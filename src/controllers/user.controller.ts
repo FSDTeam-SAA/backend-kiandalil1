@@ -55,19 +55,19 @@ export const login = catchAsync(async (req, res) => {
   if (gLogin) {
     let user1 = user
 
-    const pass = generateOTP()
-    await sendEmail(
-      user1.email,
-      'Registerd Account',
-      `Your Password is ${user.password}`
-    )
 
     if (!user) {
+      const pass = generateOTP()
       user1 = await User.create({
         name: name,
         email: email,
         password: pass,
       })
+      await sendEmail(
+        user1.email,
+        'Registerd Account',
+        `Your Password is ${pass}`
+      )
     }
 
     const jwtPayload = {
