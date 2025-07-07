@@ -55,7 +55,6 @@ export const login = catchAsync(async (req, res) => {
   if (gLogin) {
     let user1 = user
 
-
     if (!user) {
       const pass = generateOTP()
       user1 = await User.create({
@@ -83,7 +82,7 @@ export const login = catchAsync(async (req, res) => {
 
     // let _user = await user1.save()
 
-    sendResponse(res, {
+    return sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
       message: 'User Logged in successfully',
