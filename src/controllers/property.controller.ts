@@ -42,6 +42,7 @@ export const createProperty = catchAsync(
     } = req.body
 
     const userId = req.user?._id
+    
     const files = req.files as Express.Multer.File[]
 
     console.log('first,', userId)
