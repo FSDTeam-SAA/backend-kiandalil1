@@ -27,7 +27,7 @@ export const createProperty = catchAsync(
     const {
       title,
       subtitle,
-      type,
+      units,
       description,
       features,
       country,
@@ -85,9 +85,6 @@ export const createProperty = catchAsync(
           ...(parsedQuality.propertyType && {
             propertyType: parsedQuality.propertyType,
           }),
-          ...(parsedQuality.houseType && {
-            houseType: parsedQuality.houseType,
-          }),
           ...(parsedQuality.bed && { bed: parsedQuality.bed }),
           ...(parsedQuality.bath && { bath: parsedQuality.bath }),
           ...(parsedQuality.sqrFt && { sqrFt: parsedQuality.sqrFt }),
@@ -103,7 +100,7 @@ export const createProperty = catchAsync(
     const newProperty = await Property.create({
       title,
       subtitle,
-      type,
+      units,
       description,
       features: features ? JSON.parse(features) : [],
       userId,
@@ -329,7 +326,8 @@ export const getApprovedProperties = catchAsync(
       search,
       minPrice,
       maxPrice,
-      type,
+      propertyType,
+      units,
       country,
       state,
       city,
@@ -369,7 +367,8 @@ export const getApprovedProperties = catchAsync(
     }
 
     // Exact match filters
-    if (type) filter.type = type
+    if (units) filter.units = units
+    if (propertyType) filter['quality.propertyType'] = propertyType
     if (country) filter.country = country
     if (state) filter.state = state
     if (city) filter.city = city
