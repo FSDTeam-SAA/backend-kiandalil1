@@ -19,7 +19,7 @@ router.post('/register', register)
 router.post('/login', login)
 router.post('/verify', verifyEmail)
 router.post('/forget', forgetPassword),
-  router.post('/reset-password', resetPassword)
+router.post('/reset-password', resetPassword)
 router.post('/change-password', protect, changePassword)
 
 // get all user
@@ -33,3 +33,4 @@ router.patch(
 )
 
 export default router
+ 

@@ -6,7 +6,6 @@ import sendResponse from '../utils/sendResponse'
 import { Wishlist } from '../models/wishlist.models'
 import { getPaginationParams, buildMetaPagination } from '../utils/pagination'
 
-
 // Add to wishlist
 export const addToWishlist = catchAsync(async (req: Request, res: Response) => {
   const userId = req.user?._id
@@ -31,7 +30,6 @@ export const addToWishlist = catchAsync(async (req: Request, res: Response) => {
   })
 })
 
-
 // Get wishlist for user
 export const getUserWishlist = catchAsync(
   async (req: Request, res: Response) => {
@@ -45,6 +43,7 @@ export const getUserWishlist = catchAsync(
       .skip(skip)
       .limit(limit)
       .populate('propertyId')
+      .sort({ createdAt: -1 })
 
     const meta = buildMetaPagination(totalItems, page, limit)
 
@@ -62,7 +61,7 @@ export const getUserWishlist = catchAsync(
 export const removeFromWishlist = catchAsync(
   async (req: Request, res: Response) => {
     const userId = req.user?._id
-   
+
     const { wishListId } = req.params
 
     const removed = await Wishlist.findByIdAndDelete(wishListId)

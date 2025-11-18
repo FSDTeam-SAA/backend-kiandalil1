@@ -26,7 +26,9 @@ export const createReview = catchAsync(async (req: Request, res: Response) => {
 
 // Get All Reviews
 export const getAllReviews = catchAsync(async (req: Request, res: Response) => {
-  const reviews = await Review.find().populate('userId', 'name email')
+  const reviews = await Review.find()
+    .populate('userId', 'name email')
+    .sort({ createdAt: -1 })
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
