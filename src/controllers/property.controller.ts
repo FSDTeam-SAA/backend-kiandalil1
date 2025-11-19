@@ -388,3 +388,48 @@ export const getApprovedPropertiesByCity = catchAsync(
     }
   }
 )
+
+export const allFeaturedProperty = catchAsync(
+  async (req: Request, res: Response) => {
+    const filter: any = { approve: true, IsFeatured: true }
+    const { propertyType } = req.query
+
+    if (propertyType) filter['quality.propertyType'] = propertyType
+
+    const featuredProperty = await Property.find(filter)
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Featured property fetch successfully! ',
+      data: featuredProperty,
+    })
+  }
+)
+
+export const toggleFeaturedStatus = catchAsync(
+  async (req: Request, res: Response) => {
+    const { id } = req.params
+
+    const property = await Property.findById(id)
+    if (!property) {
+      throw new AppError(404, 'Property not found')
+    }
+
+    // Toggle the value
+    property.IsFeatured = !property.IsFeatured
+    await property.save()
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: `Property featured status updated to ${
+        property.IsFeatured ? 'featured' : 'not featured'
+      }.`,
+      data: {
+        id: property._id,
+        IsFeatured: property.IsFeatured,
+      },
+    })
+  }
+)

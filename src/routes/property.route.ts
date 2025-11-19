@@ -9,6 +9,8 @@ import {
   getApprovedProperties,
   getPropertiesByUserId,
   getApprovedPropertiesByCity,
+  allFeaturedProperty,
+  toggleFeaturedStatus,
 } from '../controllers/property.controller'
 import { protect } from '../middlewares/auth.middleware'
 import { isAdmin } from '../middlewares/auth.middleware'
@@ -27,12 +29,17 @@ router.get(
   getUnapprovedProperties
 )
 
-router.get
 
 router.get('/properties/user/:userId', protect, getPropertiesByUserId)
 router.get('/properties/approved/all', getApprovedProperties)
 
 // get property citys
 router.get('/all/properties/citys', getApprovedPropertiesByCity)
+
+// Get featured property
+router.get('/all/featured/property', allFeaturedProperty)
+
+// change IsFeatured property or not
+router.patch('/property/featured/:id', toggleFeaturedStatus) 
 
 export default router

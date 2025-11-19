@@ -26,5 +26,6 @@ export interface IProperty {
   quality: IQuality
   whatsappNum: number
   phoneNum: string
+  IsFeatured: boolean
 }
   

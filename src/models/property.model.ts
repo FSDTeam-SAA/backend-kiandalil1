@@ -32,6 +32,7 @@ const PropertySchema = new Schema<IProperty>(
       bath: { type: String },
       sqrFt: { type: String },
     },
+    IsFeatured: { type: Boolean, default: false },
   },
 
   { timestamps: true }
