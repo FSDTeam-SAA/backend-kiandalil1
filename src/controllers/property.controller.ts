@@ -161,7 +161,7 @@ export const deleteProperty = catchAsync(
 
     const deleted = await Property.findOneAndDelete({
       _id: id,
-      userId: req.user?._id,
+      // userId: req.user?._id,
     })
 
     if (!deleted) {

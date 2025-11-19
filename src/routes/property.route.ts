@@ -18,7 +18,7 @@ const router = express.Router()
 router.post('/properties', protect, upload.array('images'), createProperty)
 router.get('/properties/:id', getSingleProperty)
 router.patch('/properties/:id', protect, updateProperty)
-router.delete('/properties/:id', protect, deleteProperty)
+router.delete('/properties/:id', deleteProperty)
 router.patch('/properties/approve/:id', protect, isAdmin, changeApprovalStatus)
 router.get(
   '/properties/unapproved/all',
